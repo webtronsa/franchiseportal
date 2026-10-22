@@ -1,10 +1,10 @@
-// Service worker for the franchise portal. It caches only the static app shell.
-// It never caches API responses, sign-in redirects or any franchise data.
-const CACHE = 'mnx-portal-shell-v1';
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'img/mascots.webp', 'img/nastix_dot_zone_logo.webp', 'img/icon-192.png', 'img/icon-512.png'];
+// Service worker for the franchise portal. It caches only static, non-personal files.
+// It never caches the portal page, API responses, sign-in redirects or any franchise data.
+const CACHE = 'mnx-portal-static-v2';
+const STATIC = ['offline.html', 'manifest.webmanifest', 'img/mascots.webp', 'img/nastix_dot_zone_logo.webp', 'img/icon-192.png', 'img/icon-512.png'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)));
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(STATIC)));
   self.skipWaiting();
 });
 
@@ -18,14 +18,21 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
-  // Only same-origin GETs of shell files. Everything else goes straight to the network.
   if (req.method !== 'GET' || url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
-  const isShell = req.mode === 'navigate' || SHELL.some((p) => url.pathname.endsWith('/' + p.replace('./', '')) || url.pathname === '/' + p);
-  if (!isShell) return;
+
+  // Page navigations are never cached: the portal page is personal. Offline, show the static offline page.
+  if (req.mode === 'navigate') {
+    event.respondWith(fetch(req).catch(() => caches.match('offline.html')));
+    return;
+  }
+
+  // Static assets only: cache-first, filled from the network on a miss. Responses are stored only if they are ok.
+  const name = url.pathname.replace(/^\/portal\//, '').replace(/^\//, '');
+  if (!STATIC.includes(name)) return;
   event.respondWith(
-    fetch(req).then((res) => {
+    caches.match(req).then((hit) => hit || fetch(req).then((res) => {
       if (res.ok && res.type === 'basic') caches.open(CACHE).then((c) => c.put(req, res.clone()));
       return res;
-    }).catch(() => caches.match(req).then((hit) => hit || caches.match('index.html')))
+    }))
   );
 });
