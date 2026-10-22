@@ -1,0 +1,302 @@
+<!doctype html>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Monkeynastix Franchise Portal</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap");
+/* Layout: one column of app cards on phones, a grid on wider screens, then the My Franchise form. */
+:root {
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --fg: #1d2330;
+  --muted: #5d6573;
+  --line: #e2e0d9;
+  --accent: #1f7a4d;
+  --soon: #8a8f99;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151c; --surface: #1a202b; --fg: #eef1f6; --muted: #9aa3b2;
+    --line: #2a3242; --accent: #5fd39a; --soon: #6b7383; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151c; --surface: #1a202b; --fg: #eef1f6; --muted: #9aa3b2;
+  --line: #2a3242; --accent: #5fd39a; --soon: #6b7383; color-scheme: dark;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 40px;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  min-height: 100%;
+}
+#bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.55; }
+.wrap { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.brand { font-weight: 800; font-size: 1.25rem; letter-spacing: -0.01em; }
+.brand span { color: var(--accent); }
+.who { font-size: 0.875rem; color: var(--muted); }
+h1 { font-size: 1.5rem; font-weight: 800; margin: 0 0 4px; text-wrap: balance; }
+h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 4px; }
+.lede { color: var(--muted); margin: 0 0 24px; font-size: 0.95rem; }
+.welcome { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 4px 0 24px; }
+.welcome-text { min-width: 0; }
+.welcome h1 { margin-bottom: 6px; }
+.welcome .lede { margin: 0; }
+/* The mascots hover: they float up and down while a soft shadow underneath shrinks as they rise. */
+.mascot-wrap { position: relative; flex: 0 0 auto; width: 150px; max-width: 42%; }
+@media (min-width: 620px) { .mascot-wrap { width: 220px; } }
+.mascot { display: block; width: 100%; height: auto; position: relative; z-index: 1; animation: mascot-float 3.4s ease-in-out infinite; }
+.mascot-wrap::after {
+  content: ""; position: absolute; left: 14%; right: 14%; bottom: -16px; height: 12%;
+  border-radius: 50%; z-index: 0;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--fg) 38%, transparent), transparent);
+  animation: mascot-shadow 3.4s ease-in-out infinite;
+}
+@keyframes mascot-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes mascot-shadow { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(0.7); opacity: 0.4; } }
+.apps-title { font-size: 1.1rem; font-weight: 800; margin: 0 0 12px; }
+.grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 620px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
+.tile {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; padding: 16px; text-decoration: none; color: inherit;
+  min-width: 0; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.tile:hover, .tile:focus-visible {
+  border-color: var(--accent); transform: translateY(-3px);
+  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--accent) 55%, transparent);
+  outline: none;
+}
+.tile.disabled { opacity: 0.7; }
+.tile.disabled:hover { transform: none; box-shadow: none; border-color: var(--line); }
+.icon {
+  flex: 0 0 auto; width: 48px; height: 48px; border-radius: 12px;
+  display: grid; place-items: center; font-weight: 800; font-size: 1.1rem; color: #fff;
+}
+.icon.zone { background: linear-gradient(135deg, #1f7a4d, #2aa16a); }
+.icon.minastix { background: linear-gradient(135deg, #6a4bd1, #8d6ef0); }
+.icon.crm { background: linear-gradient(135deg, #1565c0, #2f8be0); }
+.icon.support { background: linear-gradient(135deg, #b5611c, #e08a3c); }
+.icon.franchise { background: linear-gradient(135deg, #0f766e, #14a39a); }
+.icon.soon { background: var(--soon); }
+.text { min-width: 0; }
+.name { font-weight: 700; font-size: 1.05rem; margin: 0 0 2px; }
+.desc { color: var(--muted); font-size: 0.875rem; margin: 0 0 8px; overflow-wrap: anywhere; }
+.badge { display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+.badge.soon { background: color-mix(in srgb, var(--soon) 18%, transparent); color: var(--muted); }
+
+.panel { margin-top: 28px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; min-width: 0; }
+.panel p.hint { color: var(--muted); font-size: 0.875rem; margin: 0 0 16px; }
+.form { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 620px) { .form { grid-template-columns: 1fr 1fr; } .form .full { grid-column: 1 / -1; } }
+label { display: grid; gap: 4px; font-size: 0.8rem; font-weight: 700; color: var(--muted); min-width: 0; }
+input, textarea {
+  font: inherit; font-size: 0.95rem; color: var(--fg); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; width: 100%; box-sizing: border-box; min-width: 0;
+}
+input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+button {
+  font: inherit; font-weight: 700; color: #fff; background: var(--accent);
+  border: 0; border-radius: 10px; padding: 10px 18px; cursor: pointer;
+}
+button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.status { font-size: 0.875rem; color: var(--muted); }
+.error { color: #d64545; font-size: 0.8rem; font-weight: 700; }
+footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } .mascot, .mascot-wrap::after { animation: none; } }
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <header>
+    <div class="brand">Monkey<span>nastix</span> Franchise Portal</div>
+    <div class="who">Franchise portal</div>
+  </header>
+
+  <section class="welcome">
+    <div class="welcome-text">
+      <h1>Welcome back</h1>
+      <p class="lede">Everything you run as a franchise, in one place.</p>
+    </div>
+    <div class="mascot-wrap">
+      <img class="mascot" src="img/mascots.webp" width="900" height="872" alt="Monkeynastix mascots giving a thumbs up" decoding="async">
+    </div>
+  </section>
+
+  <h2 class="apps-title">Your apps</h2>
+
+  <div class="grid">
+    <a class="tile" href="https://monkeynastix.zone" target="_blank" rel="noopener">
+      <div class="icon zone" aria-hidden="true">FZ</div>
+      <div class="text">
+        <p class="name">FZone</p>
+        <p class="desc">Shop, courses, quizzes and certificates.</p>
+        <span class="badge">Open</span>
+      </div>
+    </a>
+
+    <a class="tile" href="https://minastix.com" target="_blank" rel="noopener">
+      <div class="icon minastix" aria-hidden="true">MX</div>
+      <div class="text">
+        <p class="name">Minastix</p>
+        <p class="desc">Enrollments and your franchise dashboard.</p>
+        <span class="badge">Open</span>
+      </div>
+    </a>
+
+    <a class="tile" href="https://monkeynastix.online" target="_blank" rel="noopener">
+      <div class="icon crm" aria-hidden="true">SC</div>
+      <div class="text">
+        <p class="name">Schools CRM</p>
+        <p class="desc">Schools pipeline, visits and follow-up tasks.</p>
+        <span class="badge">Open</span>
+      </div>
+    </a>
+
+    <a class="tile" href="https://support.monkeynastix.com" target="_blank" rel="noopener">
+      <div class="icon support" aria-hidden="true">SP</div>
+      <div class="text">
+        <p class="name">Support</p>
+        <p class="desc">Tickets and help for franchisees.</p>
+        <span class="badge">Open</span>
+      </div>
+    </a>
+
+    <a class="tile" href="#my-franchise">
+      <div class="icon franchise" aria-hidden="true">MF</div>
+      <div class="text">
+        <p class="name">My Franchise</p>
+        <p class="desc">Your details and connected Facebook pages.</p>
+        <span class="badge">Edit</span>
+      </div>
+    </a>
+  </div>
+
+  <section class="panel" id="my-franchise" aria-labelledby="mf-title">
+    <h2 id="mf-title">My Franchise</h2>
+    <p class="hint">Keep your franchise details up to date. Approved details appear in the public directory. Facebook pages you connect will be linked from there.</p>
+
+    <form id="mf-form" class="form" novalidate>
+      <label>Franchise name
+        <input name="franchise_name" autocomplete="organization" required>
+      </label>
+      <label>Town
+        <input name="town" autocomplete="address-level2">
+      </label>
+      <label>Contact person
+        <input name="contact_name" autocomplete="name">
+      </label>
+      <label>Phone
+        <input name="phone" type="tel" autocomplete="tel">
+      </label>
+      <label class="full">Email
+        <input name="email" type="email" autocomplete="email">
+      </label>
+      <label class="full">Facebook page link
+        <input name="facebook_url" type="url" placeholder="https://www.facebook.com/your-page" inputmode="url">
+      </label>
+      <label class="full">Address
+        <textarea name="address" rows="2" autocomplete="street-address"></textarea>
+      </label>
+      <div class="full actions">
+        <button type="submit">Save details</button>
+        <span class="status" id="mf-status" role="status" aria-live="polite"></span>
+        <span class="error" id="mf-error" role="alert"></span>
+      </div>
+    </form>
+  </section>
+
+  <footer>Preview. Saving here keeps the details on this device only. Server saving comes with the portal database.</footer>
+</div>
+
+<script>
+(function () {
+  // Particle background: a slow, low-contrast flow field. Off when reduced motion is requested.
+  var canvas = document.getElementById('bg');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (canvas && canvas.getContext && !reduce) {
+    var ctx = canvas.getContext('2d');
+    var dots = [], w = 0, h = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function size() {
+      w = canvas.clientWidth; h = canvas.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var n = Math.round(Math.min(70, Math.max(24, (w * h) / 22000)));
+      dots = [];
+      for (var i = 0; i < n; i++) dots.push({ x: Math.random() * w, y: Math.random() * h, r: 0.8 + Math.random() * 1.8, s: 0.15 + Math.random() * 0.35 });
+    }
+    function field(x, y, t) { return Math.sin(x * 0.006 + t) + Math.cos(y * 0.008 - t * 0.7); }
+    var t = 0;
+    function frame() {
+      t += 0.004;
+      ctx.clearRect(0, 0, w, h);
+      var css = getComputedStyle(document.documentElement);
+      ctx.fillStyle = css.getPropertyValue('--accent').trim() || '#1f7a4d';
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i];
+        var a = field(d.x, d.y, t) * Math.PI;
+        d.x += Math.cos(a) * d.s; d.y += Math.sin(a) * d.s;
+        if (d.x < 0) d.x += w; if (d.x > w) d.x -= w;
+        if (d.y < 0) d.y += h; if (d.y > h) d.y -= h;
+        ctx.globalAlpha = 0.25 + 0.25 * Math.abs(Math.sin(a));
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+    size();
+    window.addEventListener('resize', size);
+    requestAnimationFrame(frame);
+  }
+
+  // My Franchise form. On the live portal, details come from the signed-in franchisee's account
+  // (/api/franchise_me.php, served by the portal backend). Fields stay editable either way.
+  var fill = document.getElementById('mf-form');
+  var note = document.getElementById('mf-status');
+  var MAP = { franchise_name: 'name', town: 'city', address: 'address', email: 'email', phone: 'phone', contact_name: 'contact_name', facebook_url: 'facebook_url' };
+  fetch('/api/franchise_me.php', { credentials: 'include', headers: { Accept: 'application/json' } })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (me) {
+      if (!me || !me.franchise) return;
+      Object.keys(MAP).forEach(function (field) {
+        var value = me.franchise[MAP[field]];
+        if (value && fill.elements[field] && !fill.elements[field].value) fill.elements[field].value = value;
+      });
+      note.textContent = 'Filled from your iNastix account. Check it and save any changes.';
+    })
+    .catch(function () { /* no portal API here: the form starts empty and can be filled by hand */ });
+
+  // My Franchise form: saves to this device only in this preview.
+  var form = document.getElementById('mf-form');
+  var status = document.getElementById('mf-status');
+  var error = document.getElementById('mf-error');
+  var KEY = 'mnx_my_franchise';
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved) Object.keys(saved).forEach(function (k) { if (form.elements[k]) form.elements[k].value = saved[k]; });
+  } catch (e) { /* storage unavailable: start empty */ }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    error.textContent = ''; status.textContent = '';
+    var data = {};
+    Array.prototype.forEach.call(form.elements, function (el) { if (el.name) data[el.name] = el.value.trim(); });
+    if (!data.franchise_name) { error.textContent = 'Enter the franchise name.'; return; }
+    if (data.facebook_url && !/^https:\/\/(www\.|m\.)?(facebook|fb)\.com\//i.test(data.facebook_url)) {
+      error.textContent = 'Use a full Facebook link, starting with https://www.facebook.com/';
+      return;
+    }
+    try { localStorage.setItem(KEY, JSON.stringify(data)); status.textContent = 'Saved on this device.'; }
+    catch (err) { status.textContent = 'Could not save on this device.'; }
+  });
+})();
+</script>
