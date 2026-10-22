@@ -45,10 +45,14 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 h1 { font-size: 1.5rem; font-weight: 800; margin: 0 0 4px; text-wrap: balance; }
 h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 4px; }
 .lede { color: var(--muted); margin: 0 0 24px; font-size: 0.95rem; }
-.welcome { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 4px 0 24px; }
+/* Header hero: the Nastix Zone logo on the left, the mascots to its right. Stacks on phones. */
+.hero { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 24px; margin: 4px 0 20px; }
+.zone-logo { display: block; flex: 1 1 260px; max-width: 520px; min-width: 0; width: 100%; height: auto; filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--fg) 14%, transparent)); }
+.welcome { margin: 0 0 24px; }
 .welcome-text { min-width: 0; }
 .welcome h1 { margin-bottom: 6px; }
 .welcome .lede { margin: 0; }
+@media (max-width: 480px) { .hero { justify-content: center; text-align: center; } .zone-logo { flex-basis: 100%; } }
 /* The mascots hover: they float up and down while a soft shadow underneath shrinks as they rise. */
 .mascot-wrap { position: relative; flex: 0 0 auto; width: 150px; max-width: 42%; }
 @media (min-width: 620px) { .mascot-wrap { width: 220px; } }
@@ -124,13 +128,17 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     <div class="who">Franchise portal</div>
   </header>
 
+  <section class="hero" aria-label="Welcome">
+    <img class="zone-logo" src="img/nastix_dot_zone_logo.webp" width="900" height="334" alt="Nastix.Zone" decoding="async">
+    <div class="mascot-wrap">
+      <img class="mascot" src="img/mascots.webp" width="900" height="872" alt="Monkeynastix mascots giving a thumbs up" decoding="async">
+    </div>
+  </section>
+
   <section class="welcome">
     <div class="welcome-text">
       <h1>Welcome back</h1>
       <p class="lede">Everything you run as a franchise, in one place.</p>
-    </div>
-    <div class="mascot-wrap">
-      <img class="mascot" src="img/mascots.webp" width="900" height="872" alt="Monkeynastix mascots giving a thumbs up" decoding="async">
     </div>
   </section>
 
