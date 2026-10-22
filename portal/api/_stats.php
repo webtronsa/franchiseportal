@@ -114,10 +114,10 @@ function mnx_mx_summary(array $rows, array $names): array {
         'confirmed' => $confirmed,
         'venues' => count($byVenue),
         'by_status' => array_map(fn($r) => ['label' => ucfirst($r['label'])] + $r, mnx_top($byStatus, 8)),
-        'by_venue' => mnx_top($byVenue, 8),
+        'by_venue' => mnx_top($byVenue, 5),
         'by_program' => mnx_top($byProgram, 6),
         'by_month' => $monthly,
-        'by_franchise' => mnx_top($byFranchise, 10),
+        'by_franchise' => mnx_top($byFranchise, 5),
     ];
 }
 
@@ -177,13 +177,11 @@ function mnx_crm_stats(?string $fid): array {
                 $k = $r['franchise_id'] . '|' . $r['emis'];
                 if (!isset($schools[$k]) || $r['updated_at'] > $schools[$k]['updated_at']) $schools[$k] = $r;
             }
-            $stmt = $pdo->prepare('SELECT franchise_id, emis, visit_date, visit_type, done FROM visits'
-                . ($where ? $where . ' AND' : ' WHERE') . ' visit_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)');
+            // Visits still to do in the next 30 days.
+            $stmt = $pdo->prepare('SELECT franchise_id, emis, visit_date, visit_type FROM visits'
+                . ($where ? $where . ' AND' : ' WHERE') . ' done = 0 AND visit_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)');
             $stmt->execute($args);
-            foreach ($stmt as $r) {
-                $k = $r['franchise_id'] . '|' . $r['emis'] . '|' . $r['visit_date'] . '|' . $r['visit_type'];
-                $visits[$k] = isset($visits[$k]) ? ['done' => max((int) $visits[$k]['done'], (int) $r['done'])] + $r : $r;
-            }
+            foreach ($stmt as $r) $visits[$r['franchise_id'] . '|' . $r['emis'] . '|' . $r['visit_date'] . '|' . $r['visit_type']] = true;
             $read++;
         } catch (Throwable $e) {
             error_log('portal stats: CRM source ' . ($src['label'] ?? '?') . ' failed: ' . $e->getMessage());
@@ -192,24 +190,14 @@ function mnx_crm_stats(?string $fid): array {
     if ($read === 0) return ['available' => false];
 
     $today = (new DateTimeImmutable('today', new DateTimeZone('Africa/Johannesburg')))->format('Y-m-d');
-    $in30 = (new DateTimeImmutable('+30 days', new DateTimeZone('Africa/Johannesburg')))->format('Y-m-d');
     $stages = array_fill_keys(['prospect', 'contacted', 'hot', 'active', 'inactive'], 0);
     $overdue = 0;
     foreach ($schools as $s) {
         if (isset($stages[$s['status']])) $stages[$s['status']]++;
         if ($s['followup_date'] && $s['followup_date'] < $today && !in_array($s['status'], ['active', 'inactive'], true)) $overdue++;
     }
-    $months = array_fill_keys(mnx_month_keys(6), 0);
-    $upcoming = $done = 0;
-    foreach ($visits as $v) {
-        $m = substr((string) $v['visit_date'], 0, 7);
-        if ((int) $v['done'] === 1) { $done++; if (isset($months[$m])) $months[$m]++; }
-        elseif ($v['visit_date'] >= $today && $v['visit_date'] <= $in30) $upcoming++;
-    }
     $pipeline = [];
     foreach ($stages as $stage => $n) $pipeline[] = ['label' => ucfirst($stage), 'value' => $n];
-    $monthly = [];
-    foreach ($months as $m => $n) $monthly[] = ['label' => $m, 'value' => $n];
 
     return [
         'available' => true,
@@ -217,9 +205,7 @@ function mnx_crm_stats(?string $fid): array {
         'active' => $stages['active'],
         'pipeline' => $pipeline,
         'overdue_followups' => $overdue,
-        'visits_upcoming_30d' => $upcoming,
-        'visits_done_6m' => $done,
-        'visits_by_month' => $monthly,
+        'visits_upcoming_30d' => count($visits),
         'partial' => $read < count($sources),
     ];
 }

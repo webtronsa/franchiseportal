@@ -46,7 +46,7 @@ h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 4px; }
 /* Header hero: the Nastix Zone logo on the left, the mascots to its right. Stacks on phones. */
 .hero { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 24px; margin: 4px 0 20px; }
 .zone-logo { display: block; flex: 1 1 260px; max-width: 520px; min-width: 0; width: 100%; height: auto; filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--fg) 14%, transparent)); }
-.welcome { margin: 0 0 24px; }
+.welcome { margin: 0 0 28px; }
 .welcome-text { min-width: 0; }
 .welcome h1 { margin-bottom: 6px; }
 .welcome .lede { margin: 0; }
@@ -119,41 +119,41 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 #install { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; }
 #install[hidden] { display: none; }
 /* Stats: KPI tiles, then chart cards. Bars use the accent; text stays in text colours. */
-.stats-head { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; margin: 0 0 12px; }
-.stats-head h2 { margin: 0; }
+.stats-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; margin: 0 0 12px; }
 .stats-head select { font: inherit; font-size: 0.85rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; max-width: 100%; }
-.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 @media (min-width: 900px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
-.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
 .kpi .k-label { color: var(--muted); font-size: 0.8rem; font-weight: 700; margin: 0; }
-.kpi .k-value { font-size: 1.9rem; font-weight: 800; margin: 2px 0 0; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.kpi .k-value { font-size: 1.6rem; font-weight: 800; margin: 2px 0 0; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
 .kpi .k-note { color: var(--muted); font-size: 0.75rem; margin: 2px 0 0; overflow-wrap: anywhere; }
-.charts { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; }
-@media (min-width: 760px) { .charts { grid-template-columns: 1fr 1fr; } }
-.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; }
+.charts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 620px) { .charts { grid-template-columns: 1fr 1fr; } }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
 .chart h3 { font-size: 0.95rem; font-weight: 800; margin: 0 0 2px; }
-.chart .sub { color: var(--muted); font-size: 0.8rem; margin: 0 0 12px; }
+.chart .sub { color: var(--muted); font-size: 0.75rem; margin: 0 0 8px; }
 .chart .empty { color: var(--muted); font-size: 0.875rem; margin: 8px 0; }
-.hbars { display: grid; gap: 8px; }
+.hbars { display: grid; gap: 5px; }
 .hbar { display: grid; grid-template-columns: minmax(0, 38%) 1fr auto; align-items: center; gap: 10px; font-size: 0.8rem; }
 .hbar .lab { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hbar .track { height: 10px; min-width: 0; }
 .hbar .fill { height: 100%; min-width: 2px; background: var(--accent); border-radius: 0 4px 4px 0; }
 .hbar .num { font-weight: 700; font-variant-numeric: tabular-nums; }
 .hbar:hover .fill, .col:hover .fill { filter: brightness(1.15); }
-.cols { display: flex; align-items: flex-end; gap: 2px; height: 140px; border-bottom: 1px solid var(--line); }
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 96px; border-bottom: 1px solid var(--line); }
 .col { flex: 1 1 0; height: 100%; display: flex; align-items: flex-end; min-width: 0; cursor: default; }
 .col .fill { width: 100%; background: var(--accent); border-radius: 4px 4px 0 0; min-height: 1px; }
 .col-labels { display: flex; gap: 2px; margin-top: 4px; }
 .col-labels span { flex: 1 1 0; text-align: center; font-size: 0.65rem; color: var(--muted); min-width: 0; overflow: hidden; }
-.chart details { margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
+.chart details { margin-top: 6px; font-size: 0.8rem; color: var(--muted); }
 .chart summary { cursor: pointer; }
 .chart table { width: 100%; border-collapse: collapse; margin-top: 6px; }
 .chart td { padding: 3px 0; border-bottom: 1px solid var(--line); color: var(--fg); }
 .chart td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
 .tip { position: fixed; z-index: 10; pointer-events: none; background: var(--fg); color: var(--bg); font-size: 0.8rem; font-weight: 700; padding: 5px 9px; border-radius: 8px; white-space: nowrap; }
 .tip[hidden] { display: none; }
-.stats-note { color: var(--muted); font-size: 0.8rem; margin: -16px 0 28px; }
+.stats-note { color: var(--muted); font-size: 0.75rem; margin: 8px 0 0; }
+.stats-note:empty { display: none; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } .mascot, .mascot-wrap::after { animation: none; } }
 </style>
 
@@ -172,21 +172,19 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     </div>
   </section>
 
-  <section class="welcome">
-    <div class="welcome-text">
-      <h1>Welcome back</h1>
-      <p class="lede">Everything you run as a franchise, in one place.</p>
-    </div>
-  </section>
-
-  <section id="stats" aria-labelledby="stats-title" hidden>
+  <section class="welcome" aria-labelledby="welcome-title">
     <div class="stats-head">
-      <h2 id="stats-title">Your numbers</h2>
+      <div class="welcome-text">
+        <h1 id="welcome-title">Welcome back</h1>
+        <p class="lede">Everything you run as a franchise, in one place.</p>
+      </div>
       <select id="stats-pick" aria-label="Franchise" hidden></select>
     </div>
-    <div class="kpis" id="kpis"></div>
-    <div class="charts" id="charts"></div>
-    <p class="stats-note" id="stats-note"></p>
+    <div id="stats" hidden>
+      <div class="kpis" id="kpis"></div>
+      <div class="charts" id="charts"></div>
+      <p class="stats-note" id="stats-note"></p>
+    </div>
   </section>
   <div class="tip" id="tip" role="tooltip" hidden></div>
 
@@ -403,21 +401,19 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     var mx = s.enrollments || {}, crm = s.crm || {};
     var kpis = document.getElementById('kpis'), charts = document.getElementById('charts');
     kpis.textContent = ''; charts.textContent = '';
-    kpis.appendChild(kpi('Enrollments', mx.available ? mx.confirmed : null, mx.available ? 'Confirmed in Minastix' : 'Minastix unavailable'));
+    var pending = (mx.by_status || []).filter(function (r) { return r.label === 'Pending'; }).map(function (r) { return r.value; })[0];
+    kpis.appendChild(kpi('Enrollments', mx.available ? mx.confirmed : null, !mx.available ? 'Minastix unavailable' : pending ? 'Confirmed, ' + fmt(pending) + ' pending' : 'Confirmed in Minastix'));
     kpis.appendChild(kpi('Venues', mx.available ? mx.venues : null, 'With confirmed enrollments'));
     kpis.appendChild(kpi('Active schools', crm.available ? crm.active : null, crm.available ? 'Of ' + fmt(crm.schools) + ' in your schools CRM' : 'Schools CRM unavailable'));
     kpis.appendChild(kpi('Visits, next 30 days', crm.available ? crm.visits_upcoming_30d : null, crm.available && crm.overdue_followups ? fmt(crm.overdue_followups) + ' follow-ups overdue' : 'Planned in the schools CRM'));
     if (mx.available) {
-      charts.appendChild(card('Enrollments per month', 'Confirmed, by sign-up month, last 12 months', mx.by_month, 'months'));
-      charts.appendChild(card('Enrollments by venue', 'Confirmed, top venues', mx.by_venue));
-      if (mx.by_franchise) charts.appendChild(card('Enrollments by franchise', 'Confirmed, top franchises', mx.by_franchise));
-      charts.appendChild(card('Enrollments by programme', 'Confirmed', mx.by_program));
-      charts.appendChild(card('Enrollment status', 'All enrollment records', mx.by_status));
+      charts.appendChild(card('Enrollments per month', 'Confirmed, last 12 months', mx.by_month, 'months'));
+      charts.appendChild(card('Top venues', 'Confirmed enrollments', mx.by_venue));
+      // The all-franchises view compares franchises; a single franchise sees its programme mix instead.
+      if (mx.by_franchise) charts.appendChild(card('Top franchises', 'Confirmed enrollments', mx.by_franchise));
+      else charts.appendChild(card('By programme', 'Confirmed enrollments', mx.by_program));
     }
-    if (crm.available) {
-      charts.appendChild(card('Schools pipeline', 'Schools in your CRM by stage', crm.pipeline));
-      charts.appendChild(card('Visits done per month', 'From the schools CRM, last 6 months', crm.visits_by_month, 'months'));
-    }
+    if (crm.available) charts.appendChild(card('Schools pipeline', 'Schools in your CRM by stage', crm.pipeline));
     var notes = [];
     if (mx.stale) notes.push('Minastix is not responding, so enrollments show the last saved numbers.');
     if (mx.fetched_at) notes.push('Enrollments updated ' + new Date(mx.fetched_at).toLocaleString('en-ZA', { dateStyle: 'medium', timeStyle: 'short' }) + '.');
