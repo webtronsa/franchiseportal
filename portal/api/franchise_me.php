@@ -1,70 +1,23 @@
 <?php
-// Returns the signed-in franchisee's details for the My Franchise card.
-// Identity comes from the shared sign-in (sso_current()). Franchise name comes from inastix
-// (/companies/connected/, franchisee group), the same check franchise-portal's inastixClient uses.
-// Anything not known is returned as null, so the form starts empty and can be filled by hand.
-declare(strict_types=1);
+// My Franchise: details for the signed-in franchisee. inastix supplies the franchise name and id.
+// Saved edits (stored by the signed-in franchise only) override the inastix values where set.
+require_once __DIR__ . '/_common.php';
 
-header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: no-store');
-header('X-Content-Type-Options: nosniff');
+[$email, $token, $sessionCompany] = mnx_session();
+$tenant = mnx_inastix_tenant($token);
+$companyUuid = $tenant['company_uuid'] ?? $sessionCompany;
 
-function mnx_fail(int $code, string $message): void {
-    http_response_code($code);
-    echo json_encode(['error' => $message]);
-    exit;
-}
+$franchise = ['name' => $tenant['name'], 'company_uuid' => $companyUuid, 'email' => $email];
+foreach (MNX_FIELDS as $f) { $franchise[$f] = $franchise[$f] ?? null; }
+$franchise['city'] = null; // inastix does not expose a town; see the save endpoint for the form field name
 
-$lib = '/home/monkedotonlne/sso_config/lib.php';
-if (!is_readable($lib)) {
-    mnx_fail(500, 'sign-in unavailable');
-}
-require_once $lib;
-if (!function_exists('sso_current')) {
-    mnx_fail(500, 'sign-in unavailable');
-}
-
-$user = sso_current();
-if (!is_array($user) || empty($user['email'])) {
-    mnx_fail(401, 'not signed in');
-}
-
-$franchise = [
-    'name' => null,
-    'city' => null,
-    'address' => null,
-    'email' => (string) $user['email'],
-    'phone' => null,
-    'contact_name' => null,
-    'facebook_url' => null,
-    'company_uuid' => null,
-];
-
-// The inastix access token must come from the sign-in session. It is never sent to the browser.
-$token = $user['inastix_access_token'] ?? null;
-if (is_string($token) && $token !== '') {
-    $ch = curl_init('https://backend.inastix.com/companies/connected/');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => ['Authorization: JWT ' . $token, 'Accept: application/json'],
-        CURLOPT_TIMEOUT => 10,
-    ]);
-    $body = curl_exec($ch);
-    $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-    curl_close($ch);
-
-    $tenants = ($code === 200 && is_string($body)) ? json_decode($body, true) : null;
-    if (is_array($tenants)) {
-        foreach ($tenants as $tenant) {
-            foreach (($tenant['groups'] ?? []) as $group) {
-                if (($group['name'] ?? '') === 'franchisee') {
-                    $franchise['name'] = $tenant['tenant_name'] ?? null;
-                    $franchise['company_uuid'] = $tenant['id'] ?? null;
-                    break 2;
-                }
-            }
-        }
+if ($companyUuid && is_readable(MNX_DB_CONFIG)) {
+    $stmt = mnx_db()->prepare('SELECT name, contact_name, phone, email, address, town, facebook_url FROM franchise_details WHERE company_uuid = ?');
+    $stmt->execute([$companyUuid]);
+    if ($saved = $stmt->fetch()) {
+        foreach ($saved as $k => $v) { if ($v !== null && $v !== '') $franchise[$k] = $v; }
     }
 }
+$franchise['city'] = $franchise['town'];
 
-echo json_encode(['franchise' => $franchise], JSON_UNESCAPED_SLASHES);
+mnx_json(200, ['franchise' => $franchise]);
