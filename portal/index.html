@@ -12,24 +12,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap");
 /* Layout: one column of app cards on phones, a grid on wider screens, then the My Franchise form. */
 :root {
-  --bg: #f6f5f1;
-  --surface: #ffffff;
-  --fg: #1d2330;
-  --muted: #5d6573;
-  --line: #e2e0d9;
-  --accent: #1f7a4d;
-  --soon: #8a8f99;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #11151c; --surface: #1a202b; --fg: #eef1f6; --muted: #9aa3b2;
-    --line: #2a3242; --accent: #5fd39a; --soon: #6b7383; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
+  /* Dark is the default theme. The OS light setting is ignored unless the user switches to light. */
   --bg: #11151c; --surface: #1a202b; --fg: #eef1f6; --muted: #9aa3b2;
-  --line: #2a3242; --accent: #5fd39a; --soon: #6b7383; color-scheme: dark;
+  --line: #2a3242; --accent: #5fd39a; --soon: #6b7383;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg: #f6f5f1; --surface: #ffffff; --fg: #1d2330; --muted: #5d6573;
+  --line: #e2e0d9; --accent: #1f7a4d; --soon: #8a8f99;
+  color-scheme: light;
 }
 body {
   margin: 0;
@@ -124,6 +115,7 @@ button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 .status { font-size: 0.875rem; color: var(--muted); }
 .error { color: #d64545; font-size: 0.8rem; font-weight: 700; }
 footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
+#theme { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; background: transparent; color: var(--fg); border: 1px solid var(--line); }
 #install { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; }
 #install[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } .mascot, .mascot-wrap::after { animation: none; } }
@@ -134,7 +126,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 <div class="wrap">
   <header>
     <div class="brand">Monkey<span>nastix</span> Franchise Portal</div>
-    <div class="who">Franchise portal <button type="button" id="install" hidden>Install app</button></div>
+    <div class="who">Franchise portal <button type="button" id="install" hidden>Install app</button><button type="button" id="theme" aria-label="Switch colour theme">Light mode</button></div>
   </header>
 
   <section class="hero" aria-label="Welcome">
@@ -275,6 +267,21 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     window.addEventListener('resize', size);
     requestAnimationFrame(frame);
   }
+
+  // Theme: dark by default. A saved choice (light or dark) overrides it.
+  var themeBtn = document.getElementById('theme');
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeBtn.textContent = t === 'light' ? 'Dark mode' : 'Light mode';
+  }
+  var storedTheme = null;
+  try { storedTheme = localStorage.getItem('mnx_theme'); } catch (e) { /* storage unavailable: dark default */ }
+  applyTheme(storedTheme === 'light' ? 'light' : 'dark');
+  themeBtn.addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem('mnx_theme', next); } catch (e) { /* not saved: applies for this visit only */ }
+  });
 
   // PWA: register the service worker (shell cache only) and offer an install button when the browser allows it.
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
