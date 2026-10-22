@@ -1,6 +1,13 @@
 <!doctype html>
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Monkeynastix Franchise Portal</title>
+<meta name="theme-color" content="#1f7a4d">
+<meta name="application-name" content="Monkeynastix">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Monkeynastix">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap");
 /* Layout: one column of app cards on phones, a grid on wider screens, then the My Franchise form. */
@@ -117,6 +124,8 @@ button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 .status { font-size: 0.875rem; color: var(--muted); }
 .error { color: #d64545; font-size: 0.8rem; font-weight: 700; }
 footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
+#install { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; }
+#install[hidden] { display: none; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } .mascot, .mascot-wrap::after { animation: none; } }
 </style>
 
@@ -125,7 +134,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 <div class="wrap">
   <header>
     <div class="brand">Monkey<span>nastix</span> Franchise Portal</div>
-    <div class="who">Franchise portal</div>
+    <div class="who">Franchise portal <button type="button" id="install" hidden>Install app</button></div>
   </header>
 
   <section class="hero" aria-label="Welcome">
@@ -266,6 +275,20 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     window.addEventListener('resize', size);
     requestAnimationFrame(frame);
   }
+
+  // PWA: register the service worker (shell cache only) and offer an install button when the browser allows it.
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('sw.js').catch(function () { /* offline caching is optional */ });
+  }
+  var installBtn = document.getElementById('install');
+  var deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferredPrompt = e; installBtn.hidden = false; });
+  installBtn.addEventListener('click', function () {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.finally(function () { deferredPrompt = null; installBtn.hidden = true; });
+  });
+  window.addEventListener('appinstalled', function () { installBtn.hidden = true; });
 
   // My Franchise form. On the live portal, details come from the signed-in franchisee's account
   // (/api/franchise_me.php, served by the portal backend). Fields stay editable either way.
