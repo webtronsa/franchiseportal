@@ -36,17 +36,14 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 5,
     ]);
-    // HESK 3.6 keeps ticket emails in <prefix>customers, linked to tickets through <prefix>ticket_to_customer.
+    // HESK 3.5+ links tickets to customers through ticket_to_customer; the email lives on the customer.
     $match = '';
     $args = [];
     if (!$isAdmin) {
-        $in = [];
-        foreach ($emails as $i => $e) {
-            $in[] = ":e$i";
-            $args[":e$i"] = $e;
-        }
+        foreach ($emails as $i => $e) $args[":e$i"] = $e;
         $match = " WHERE id IN (SELECT tc.ticket_id FROM `{$prefix}ticket_to_customer` tc"
-            . " JOIN `{$prefix}customers` c ON c.id = tc.customer_id WHERE LOWER(c.email) IN (" . implode(', ', $in) . '))';
+            . " JOIN `{$prefix}customers` c ON c.id = tc.customer_id"
+            . ' WHERE LOWER(c.email) IN (' . implode(', ', array_keys($args)) . '))';
     }
     $t = "`{$prefix}tickets`";
     $stmt = $pdo->prepare("SELECT status, COUNT(*) AS n FROM $t$match GROUP BY status");
