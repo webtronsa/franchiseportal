@@ -36,16 +36,17 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 5,
     ]);
-    // HESK stores one or more customer emails per ticket, comma separated.
+    // HESK 3.6 keeps ticket emails in <prefix>customers, linked to tickets through <prefix>ticket_to_customer.
     $match = '';
     $args = [];
     if (!$isAdmin) {
-        $parts = [];
+        $in = [];
         foreach ($emails as $i => $e) {
-            $parts[] = "FIND_IN_SET(:e$i, REPLACE(LOWER(email), ' ', '')) > 0";
+            $in[] = ":e$i";
             $args[":e$i"] = $e;
         }
-        $match = ' WHERE (' . implode(' OR ', $parts) . ')';
+        $match = " WHERE id IN (SELECT tc.ticket_id FROM `{$prefix}ticket_to_customer` tc"
+            . " JOIN `{$prefix}customers` c ON c.id = tc.customer_id WHERE LOWER(c.email) IN (" . implode(', ', $in) . '))';
     }
     $t = "`{$prefix}tickets`";
     $stmt = $pdo->prepare("SELECT status, COUNT(*) AS n FROM $t$match GROUP BY status");
