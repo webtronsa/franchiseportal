@@ -88,6 +88,7 @@ h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 4px; }
 .icon.minastix { background: linear-gradient(135deg, #6a4bd1, #8d6ef0); }
 .icon.crm { background: linear-gradient(135deg, #1565c0, #2f8be0); }
 .icon.support { background: linear-gradient(135deg, #b5611c, #e08a3c); }
+.icon.inastix { background: linear-gradient(135deg, #b8326a, #e0558f); }
 .icon.franchise { background: linear-gradient(135deg, #0f766e, #14a39a); }
 .icon.soon { background: var(--soon); }
 .text { min-width: 0; }
@@ -195,6 +196,17 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
   <h2 class="apps-title">Your apps</h2>
 
   <div class="grid">
+    <!-- iNastix comes first. It is a plain link: nothing from iNastix loads until the card is clicked
+         (no iframe, prefetch or preconnect), so it cannot race the portal's own sign-in. -->
+    <a class="tile" href="https://app.inastix.com/" target="_blank" rel="noopener noreferrer">
+      <div class="icon inastix" aria-hidden="true">iN</div>
+      <div class="text">
+        <p class="name">iNastix</p>
+        <p class="desc">Billing, children, schools and your franchise records.</p>
+        <span class="badge">Open</span>
+      </div>
+    </a>
+
     <a class="tile" href="https://monkeynastix.zone" target="_blank" rel="noopener">
       <div class="icon zone" aria-hidden="true">FZ</div>
       <div class="text">
