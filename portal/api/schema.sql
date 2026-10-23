@@ -11,3 +11,10 @@ CREATE TABLE IF NOT EXISTS franchise_details (
   updated_by VARCHAR(255) NULL,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) DEFAULT CHARSET = utf8mb4;
+
+-- Stats view: short-lived copies of Minastix summaries (also created by the stats endpoint on first use).
+CREATE TABLE IF NOT EXISTS stats_cache (
+  cache_key VARCHAR(80) NOT NULL PRIMARY KEY,
+  data MEDIUMTEXT NOT NULL,
+  fetched_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) DEFAULT CHARSET = utf8mb4;
