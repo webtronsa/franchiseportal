@@ -2,7 +2,7 @@
 
 Franchise portal for Monkeynastix, served at https://portal.monkeynastix.online/.
 
-- `portal/index.html`: the dashboard home. It is deployed as `index.php` behind the shared `mnx_sso` sign-in from accounts.monkeynastix.online.
+- `portal/index.html`: the dashboard home. It is public: the app menu shows without signing in. Franchise data (stats, tickets, My Franchise) loads only after the shared `mnx_sso` sign-in from accounts.monkeynastix.online (`portal/api/session.php`); every API checks the session itself.
 - `portal/api/stats.php`: the "Your numbers" section (Minastix enrollments, schools CRM venues, pipeline and visits) for the signed-in franchise.
 - `portal/api/support.php`: open HESK tickets for the signed-in franchise, shown in the Support card.
 
