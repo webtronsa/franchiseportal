@@ -119,9 +119,6 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 #theme { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; background: transparent; color: var(--fg); border: 1px solid var(--line); }
 #install { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; }
 #install[hidden] { display: none; }
-.signin { display: inline-block; font-size: 0.8rem; font-weight: 700; padding: 6px 12px; border-radius: 10px; background: var(--accent); color: #fff; text-decoration: none; }
-.signin[hidden] { display: none; }
-
 /* Stats: KPI tiles, then chart cards. Bars use the accent; text stays in text colours. */
 .stats-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; margin: 0 0 12px; }
 .stats-head select { font: inherit; font-size: 0.85rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; max-width: 100%; }
@@ -170,7 +167,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 <div class="wrap">
   <header>
     <div class="brand">Monkey<span>nastix</span> Franchise Portal</div>
-    <div class="who"><a class="signin" id="signin" href="https://accounts.monkeynastix.online/">Franchise sign in</a> <button type="button" id="install" hidden>Install app</button><button type="button" id="theme" aria-label="Switch colour theme">Light mode</button></div>
+    <div class="who">Franchise portal <button type="button" id="install" hidden>Install app</button><button type="button" id="theme" aria-label="Switch colour theme">Light mode</button></div>
   </header>
 
   <section class="hero" aria-label="Welcome">
@@ -183,8 +180,8 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
   <section class="welcome" aria-labelledby="welcome-title">
     <div class="stats-head">
       <div class="welcome-text">
-        <h1 id="welcome-title">Welcome</h1>
-        <p class="lede" id="welcome-lede">Every Monkeynastix app in one place. Sign in with your iNastix account to see your franchise's numbers.</p>
+        <h1 id="welcome-title">Welcome back</h1>
+        <p class="lede">Everything you run as a franchise, in one place.</p>
       </div>
       <select id="stats-pick" aria-label="Franchise" hidden></select>
     </div>
@@ -247,7 +244,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
       </div>
     </a>
 
-    <a class="tile" href="https://accounts.monkeynastix.online/" id="mf-card">
+    <a class="tile" href="#my-franchise">
       <div class="icon franchise" aria-hidden="true">MF</div>
       <div class="text">
         <p class="name">My Franchise</p>
@@ -257,7 +254,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     </a>
   </div>
 
-  <section class="panel" id="my-franchise" aria-labelledby="mf-title" hidden>
+  <section class="panel" id="my-franchise" aria-labelledby="mf-title">
     <h2 id="mf-title">My Franchise</h2>
     <p class="hint">Keep your franchise details up to date. Approved details appear in the public directory. Facebook pages you connect will be linked from there.</p>
 
@@ -291,6 +288,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     </form>
   </section>
 
+  <footer>Preview. Saving here keeps the details on this device only. Server saving comes with the portal database.</footer>
 </div>
 
 <script>
@@ -460,7 +458,6 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
   pick.addEventListener('change', function () { loadStats(pick.value); });
 
   // Support card: open HESK tickets for this franchise (server-side read; nothing secret reaches the browser).
-  function loadSupport() {
   fetch('/api/support.php', { credentials: 'include', headers: { Accept: 'application/json' } })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (t) {
@@ -477,7 +474,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
       list.hidden = !list.children.length;
     })
     .catch(function () { /* no support API here: the card stays a plain link */ });
-  }
+  loadStats('');
   // One shared tooltip for every bar and column.
   function moveTip(e) {
     var t = e.target.closest && e.target.closest('[data-tip]');
@@ -494,7 +491,6 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
   var fill = document.getElementById('mf-form');
   var note = document.getElementById('mf-status');
   var MAP = { franchise_name: 'name', town: 'city', address: 'address', email: 'email', phone: 'phone', contact_name: 'contact_name', facebook_url: 'facebook_url' };
-  function loadMyFranchise() {
   fetch('/api/franchise_me.php', { credentials: 'include', headers: { Accept: 'application/json' } })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (me) {
@@ -506,22 +502,6 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
       note.textContent = 'Filled from your iNastix account. Check it and save any changes.';
     })
     .catch(function () { /* no portal API here: the form starts empty and can be filled by hand */ });
-  }
-
-  // The app menu is public. Franchise numbers, tickets and My Franchise load only for a signed-in franchisee.
-  var signin = document.getElementById('signin');
-  fetch('/api/session.php', { credentials: 'include', headers: { Accept: 'application/json' } })
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (s) {
-      if (!s || !s.signed_in) return;
-      document.getElementById('welcome-title').textContent = 'Welcome back';
-      document.getElementById('welcome-lede').textContent = 'Everything you run as a franchise, in one place.';
-      signin.hidden = true;
-      document.getElementById('mf-card').href = '#my-franchise';
-      document.getElementById('my-franchise').hidden = false;
-      loadStats(''); loadSupport(); loadMyFranchise();
-    })
-    .catch(function () { /* signed-out view: the public app menu only */ });
 
   // My Franchise form: saves to this device only in this preview.
   var form = document.getElementById('mf-form');
