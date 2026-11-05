@@ -46,7 +46,7 @@ h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 4px; }
 /* Header hero: the Nastix Zone logo on the left, the mascots to its right. Stacks on phones. */
 .hero { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 24px; margin: 4px 0 20px; }
 .zone-logo { display: block; flex: 1 1 260px; max-width: 520px; min-width: 0; width: 100%; height: auto; filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--fg) 14%, transparent)); }
-.welcome { margin: 0 0 24px; }
+.welcome { margin: 0 0 28px; }
 .welcome-text { min-width: 0; }
 .welcome h1 { margin-bottom: 6px; }
 .welcome .lede { margin: 0; }
@@ -88,6 +88,7 @@ h2 { font-size: 1.2rem; font-weight: 800; margin: 0 0 4px; }
 .icon.minastix { background: linear-gradient(135deg, #6a4bd1, #8d6ef0); }
 .icon.crm { background: linear-gradient(135deg, #1565c0, #2f8be0); }
 .icon.support { background: linear-gradient(135deg, #b5611c, #e08a3c); }
+.icon.inastix { background: linear-gradient(135deg, #b8326a, #e0558f); }
 .icon.franchise { background: linear-gradient(135deg, #0f766e, #14a39a); }
 .icon.soon { background: var(--soon); }
 .text { min-width: 0; }
@@ -118,6 +119,46 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
 #theme { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; background: transparent; color: var(--fg); border: 1px solid var(--line); }
 #install { margin-left: 8px; font-size: 0.8rem; padding: 6px 12px; }
 #install[hidden] { display: none; }
+/* Stats: KPI tiles, then chart cards. Bars use the accent; text stays in text colours. */
+.stats-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; margin: 0 0 12px; }
+.stats-head select { font: inherit; font-size: 0.85rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; max-width: 100%; }
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+@media (min-width: 900px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.kpi .k-label { color: var(--muted); font-size: 0.8rem; font-weight: 700; margin: 0; }
+.kpi .k-value { font-size: 1.6rem; font-weight: 800; margin: 2px 0 0; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.kpi .k-note { color: var(--muted); font-size: 0.75rem; margin: 2px 0 0; overflow-wrap: anywhere; }
+.charts { display: grid; grid-template-columns: 1fr; gap: 10px; }
+@media (min-width: 620px) { .charts { grid-template-columns: 1fr 1fr; } }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; min-width: 0; }
+.chart h3 { font-size: 0.95rem; font-weight: 800; margin: 0 0 2px; }
+.chart .sub { color: var(--muted); font-size: 0.75rem; margin: 0 0 8px; }
+.chart .empty { color: var(--muted); font-size: 0.875rem; margin: 8px 0; }
+.hbars { display: grid; gap: 5px; }
+.hbar { display: grid; grid-template-columns: minmax(0, 38%) 1fr auto; align-items: center; gap: 10px; font-size: 0.8rem; }
+.hbar .lab { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hbar .track { height: 10px; min-width: 0; }
+.hbar .fill { height: 100%; min-width: 2px; background: var(--accent); border-radius: 0 4px 4px 0; }
+.hbar .num { font-weight: 700; font-variant-numeric: tabular-nums; }
+.hbar:hover .fill, .col:hover .fill { filter: brightness(1.15); }
+.cols { display: flex; align-items: flex-end; gap: 2px; height: 96px; border-bottom: 1px solid var(--line); }
+.col { flex: 1 1 0; height: 100%; display: flex; align-items: flex-end; min-width: 0; cursor: default; }
+.col .fill { width: 100%; background: var(--accent); border-radius: 4px 4px 0 0; min-height: 1px; }
+.col-labels { display: flex; gap: 2px; margin-top: 4px; }
+.col-labels span { flex: 1 1 0; text-align: center; font-size: 0.65rem; color: var(--muted); min-width: 0; overflow: hidden; }
+.chart details { margin-top: 6px; font-size: 0.8rem; color: var(--muted); }
+.chart summary { cursor: pointer; }
+.chart table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.chart td { padding: 3px 0; border-bottom: 1px solid var(--line); color: var(--fg); }
+.chart td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.tip { position: fixed; z-index: 10; pointer-events: none; background: var(--fg); color: var(--bg); font-size: 0.8rem; font-weight: 700; padding: 5px 9px; border-radius: 8px; white-space: nowrap; }
+.tip[hidden] { display: none; }
+.stats-note { color: var(--muted); font-size: 0.75rem; margin: 8px 0 0; }
+.stats-note:empty { display: none; }
+.tickets { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; font-size: 0.8rem; }
+.tickets li { display: grid; gap: 1px; min-width: 0; }
+.tickets .t-subject { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tickets .t-meta { color: var(--muted); font-size: 0.75rem; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } .mascot, .mascot-wrap::after { animation: none; } }
 </style>
 
@@ -136,16 +177,36 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     </div>
   </section>
 
-  <section class="welcome">
-    <div class="welcome-text">
-      <h1>Welcome back</h1>
-      <p class="lede">Everything you run as a franchise, in one place.</p>
+  <section class="welcome" aria-labelledby="welcome-title">
+    <div class="stats-head">
+      <div class="welcome-text">
+        <h1 id="welcome-title">Welcome back</h1>
+        <p class="lede">Everything you run as a franchise, in one place.</p>
+      </div>
+      <select id="stats-pick" aria-label="Franchise" hidden></select>
+    </div>
+    <div id="stats" hidden>
+      <div class="kpis" id="kpis"></div>
+      <div class="charts" id="charts"></div>
+      <p class="stats-note" id="stats-note"></p>
     </div>
   </section>
+  <div class="tip" id="tip" role="tooltip" hidden></div>
 
   <h2 class="apps-title">Your apps</h2>
 
   <div class="grid">
+    <!-- iNastix comes first. It is a plain link: nothing from iNastix loads until the card is clicked
+         (no iframe, prefetch or preconnect), so it cannot race the portal's own sign-in. -->
+    <a class="tile" href="https://inastix.com/" target="_blank" rel="noopener noreferrer">
+      <div class="icon inastix" aria-hidden="true">iN</div>
+      <div class="text">
+        <p class="name">iNastix</p>
+        <p class="desc">Billing, children, schools and your franchise records.</p>
+        <span class="badge">Open</span>
+      </div>
+    </a>
+
     <a class="tile" href="https://monkeynastix.zone" target="_blank" rel="noopener">
       <div class="icon zone" aria-hidden="true">FZ</div>
       <div class="text">
@@ -164,7 +225,7 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
       </div>
     </a>
 
-    <a class="tile" href="https://monkeynastix.net/" target="_blank" rel="noopener">
+    <a class="tile" href="https://schools.monkeynastix.online/" target="_blank" rel="noopener">
       <div class="icon crm" aria-hidden="true">SC</div>
       <div class="text">
         <p class="name">Schools CRM</p>
@@ -178,7 +239,8 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
       <div class="text">
         <p class="name">Support</p>
         <p class="desc">Tickets and help for franchisees.</p>
-        <span class="badge">Open</span>
+        <span class="badge" id="support-badge">Open</span>
+        <ul class="tickets" id="tickets" hidden></ul>
       </div>
     </a>
 
@@ -296,6 +358,133 @@ footer { margin-top: 24px; color: var(--muted); font-size: 0.8rem; }
     deferredPrompt.userChoice.finally(function () { deferredPrompt = null; installBtn.hidden = true; });
   });
   window.addEventListener('appinstalled', function () { installBtn.hidden = true; });
+
+  // Stats: numbers and charts for the signed-in franchise from /api/stats.php. Hidden if the account is not linked.
+  var statsEl = document.getElementById('stats');
+  var pick = document.getElementById('stats-pick');
+  var tip = document.getElementById('tip');
+  var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function fmt(n) { return Number(n || 0).toLocaleString('en-ZA'); }
+  function monthName(ym) { var p = String(ym).split('-'); return MONTHS[+p[1] - 1] + ' ' + p[0]; }
+  function kpi(label, value, note) {
+    var k = el('div', 'kpi');
+    k.appendChild(el('p', 'k-label', label));
+    k.appendChild(el('p', 'k-value', value == null ? '–' : fmt(value)));
+    if (note) k.appendChild(el('p', 'k-note', note));
+    return k;
+  }
+  function table(rows, labelFn) {
+    var d = el('details'); d.appendChild(el('summary', null, 'Show as table'));
+    var t = el('table');
+    rows.forEach(function (r) { var tr = el('tr'); tr.appendChild(el('td', null, labelFn(r.label))); tr.appendChild(el('td', null, fmt(r.value))); t.appendChild(tr); });
+    d.appendChild(t); return d;
+  }
+  function card(title, sub, rows, kind) {
+    var c = el('div', 'chart');
+    c.appendChild(el('h3', null, title));
+    if (sub) c.appendChild(el('p', 'sub', sub));
+    var total = (rows || []).reduce(function (a, r) { return a + r.value; }, 0);
+    if (!rows || !rows.length || !total) { c.appendChild(el('p', 'empty', 'Nothing recorded yet.')); return c; }
+    var max = Math.max.apply(null, rows.map(function (r) { return r.value; }));
+    var labelFn = kind === 'months' ? monthName : String;
+    if (kind === 'months') {
+      var cols = el('div', 'cols'), labels = el('div', 'col-labels');
+      rows.forEach(function (r, i) {
+        var col = el('div', 'col'), f = el('div', 'fill');
+        f.style.height = (r.value / max * 100) + '%';
+        col.dataset.tip = monthName(r.label) + ': ' + fmt(r.value);
+        col.setAttribute('aria-label', col.dataset.tip);
+        col.appendChild(f); cols.appendChild(col);
+        // Label every month when there are few, otherwise every other one so they never collide on phones.
+        labels.appendChild(el('span', null, rows.length <= 6 || i % 2 === rows.length % 2 ? MONTHS[+r.label.split('-')[1] - 1] : ''));
+      });
+      c.appendChild(cols); c.appendChild(labels);
+    } else {
+      var list = el('div', 'hbars');
+      rows.forEach(function (r) {
+        var row = el('div', 'hbar'), track = el('div', 'track'), f = el('div', 'fill');
+        f.style.width = (r.value / max * 100) + '%';
+        row.dataset.tip = r.label + ': ' + fmt(r.value) + ' (' + Math.round(r.value / total * 100) + '%)';
+        row.appendChild(el('span', 'lab', r.label)); track.appendChild(f); row.appendChild(track); row.appendChild(el('span', 'num', fmt(r.value)));
+        list.appendChild(row);
+      });
+      c.appendChild(list);
+    }
+    c.appendChild(table(rows, labelFn));
+    return c;
+  }
+  function renderStats(s) {
+    var mx = s.enrollments || {}, crm = s.crm || {};
+    var kpis = document.getElementById('kpis'), charts = document.getElementById('charts');
+    kpis.textContent = ''; charts.textContent = '';
+    var pending = (mx.by_status || []).filter(function (r) { return r.label === 'Pending'; }).map(function (r) { return r.value; })[0];
+    kpis.appendChild(kpi('Enrollments', mx.available ? mx.confirmed : null, !mx.available ? 'Minastix unavailable' : pending ? 'Confirmed, ' + fmt(pending) + ' pending' : 'Confirmed in Minastix'));
+    kpis.appendChild(kpi('Venues', mx.available ? mx.venues : null, 'With confirmed enrollments'));
+    kpis.appendChild(kpi('Active schools', crm.available ? crm.active : null, crm.available ? 'Of ' + fmt(crm.schools) + ' in your schools CRM' : 'Schools CRM unavailable'));
+    kpis.appendChild(kpi('Visits, next 30 days', crm.available ? crm.visits_upcoming_30d : null, crm.available && crm.overdue_followups ? fmt(crm.overdue_followups) + ' follow-ups overdue' : 'Planned in the schools CRM'));
+    if (mx.available) {
+      charts.appendChild(card('Enrollments per month', 'Confirmed, last 12 months', mx.by_month, 'months'));
+      charts.appendChild(card('Top venues', 'Confirmed enrollments', mx.by_venue));
+      // The all-franchises view compares franchises; a single franchise sees its programme mix instead.
+      if (mx.by_franchise) charts.appendChild(card('Top franchises', 'Confirmed enrollments', mx.by_franchise));
+      else charts.appendChild(card('By programme', 'Confirmed enrollments', mx.by_program));
+    }
+    if (crm.available) charts.appendChild(card('Schools pipeline', 'Schools in your CRM by stage', crm.pipeline));
+    var notes = [];
+    if (mx.stale) notes.push('Minastix is not responding, so enrollments show the last saved numbers.');
+    if (mx.fetched_at) notes.push('Enrollments updated ' + new Date(mx.fetched_at).toLocaleString('en-ZA', { dateStyle: 'medium', timeStyle: 'short' }) + '.');
+    if (crm.partial) notes.push('One schools database could not be read, so school numbers may be low.');
+    document.getElementById('stats-note').textContent = notes.join(' ');
+    statsEl.hidden = false;
+  }
+  function loadStats(fid) {
+    var url = '/api/stats.php' + (fid ? '?franchise=' + encodeURIComponent(fid) : '');
+    statsEl.setAttribute('aria-busy', 'true');
+    fetch(url, { credentials: 'include', headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (s) {
+        statsEl.removeAttribute('aria-busy');
+        if (!s || !s.linked) { statsEl.hidden = true; return; }
+        if (s.admin && s.franchises && !pick.options.length) {
+          pick.appendChild(new Option('All franchises', ''));
+          s.franchises.forEach(function (f) { pick.appendChild(new Option(f.name, f.id)); });
+          pick.hidden = false;
+        }
+        renderStats(s);
+      })
+      .catch(function () { statsEl.removeAttribute('aria-busy'); /* no stats API here: the section stays hidden */ });
+  }
+  pick.addEventListener('change', function () { loadStats(pick.value); });
+
+  // Support card: open HESK tickets for this franchise (server-side read; nothing secret reaches the browser).
+  fetch('/api/support.php', { credentials: 'include', headers: { Accept: 'application/json' } })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (t) {
+      if (!t || !t.available) return;
+      document.getElementById('support-badge').textContent = t.open ? fmt(t.open) + ' open ticket' + (t.open === 1 ? '' : 's') : 'No open tickets';
+      var list = document.getElementById('tickets');
+      (t.recent || []).forEach(function (k) {
+        var li = el('li');
+        li.appendChild(el('span', 't-subject', k.subject));
+        var when = k.updated ? new Date(k.updated.replace(' ', 'T')).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' }) : '';
+        li.appendChild(el('span', 't-meta', k.status + (when ? ' · updated ' + when : '')));
+        list.appendChild(li);
+      });
+      list.hidden = !list.children.length;
+    })
+    .catch(function () { /* no support API here: the card stays a plain link */ });
+  loadStats('');
+  // One shared tooltip for every bar and column.
+  function moveTip(e) {
+    var t = e.target.closest && e.target.closest('[data-tip]');
+    if (!t) { tip.hidden = true; return; }
+    tip.textContent = t.dataset.tip; tip.hidden = false;
+    var x = Math.min(e.clientX + 12, window.innerWidth - tip.offsetWidth - 8);
+    tip.style.left = Math.max(8, x) + 'px'; tip.style.top = (e.clientY - tip.offsetHeight - 10) + 'px';
+  }
+  statsEl.addEventListener('pointermove', moveTip);
+  statsEl.addEventListener('pointerleave', function () { tip.hidden = true; });
 
   // My Franchise form. On the live portal, details come from the signed-in franchisee's account
   // (/api/franchise_me.php, served by the portal backend). Fields stay editable either way.
